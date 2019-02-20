@@ -1,12 +1,12 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    xmin = -1600
-    xmax = 400
-    ymin = -750
-    ymax = 750
-    ny = 150
-    nx = 200
+    xmin = -15e3
+    xmax = 15e3
+    ymin = -20e3
+    ymax = 20e3
+    nx = 300
+    ny = 400
     uniform_refine = 0
 
 []
@@ -45,40 +45,34 @@
         variable = H_f
         coupled = H
         value = 0
+        execute_on = 'INITIAL TIMESTEP_BEGIN'
     [../]
     [./current_sea_floor_profile]
-        type = FunctionAux
-        function = Intial_H
+        type = SolutionAux
+        solution = soln
         variable = H
-        execute_on = 'TIMESTEP_BEGIN Linear'
+        add_factor = 1000.0
+        scale_factor = -1.0
+        execute_on = 'INITIAL TIMESTEP_BEGIN'
     [../]
 []
 
-[Functions]
-    # [./Intial_h]
-    #     type = ParsedFunction
-    #     value = '0+A*exp(-((x-x_0)*(x-x_0)/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y)))'
-    #     vars = 'A x_0 y_0 sigma_x sigma_y k_slope'
-    #     vals = '1.0 -30.0 0.0 10.0 10.0 1.0'
-    # [../]
+[UserObjects]
+  [./soln]
+    type = SolutionUserObject
+    mesh = H_input_150_250.e
+    system_variables = H
 
-    [./Intial_H]
-        type = ParsedFunction
-        value = '1000-((A*exp(-((x-(x_0+v*t))*(x-(x_0+v*t))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t<t_0)
-                 + (A*exp(-((x-(x_0+v*t_0))*(x-(x_0+v*t_0))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t>=t_0)
-                 +(k_slope*(x-x_transit)*(x>=x_transit)+0*(x<x_transit)))'
-        vars = 'A x_0 y_0 sigma_x sigma_y k_slope v x_transit t_0 '
-        vals = '1.0 -500.0 0.0 80.0 80.0 2.5 100 0.0 0.1'
-    [../]
+
+  [../]
+[]
+
+
+[Functions]
 
 []
 
 [ICs]
-    [./IC_H]
-      type = FunctionIC
-      variable = H
-      function = Intial_H
-    [../]
 []
 
 [Kernels]

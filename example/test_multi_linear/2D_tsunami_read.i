@@ -1,12 +1,12 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    xmin = -1600
-    xmax = 400
-    ymin = -750
-    ymax = 750
-    ny = 150
-    nx = 200
+    xmin = -3
+    xmax = 3
+    nx = 60
+    ymin = -3
+    ymax = 3
+    ny = 60
     uniform_refine = 0
 
 []
@@ -46,15 +46,26 @@
         coupled = H
         value = 0
     [../]
-    [./current_sea_floor_profile]
-        type = FunctionAux
-        function = Intial_H
-        variable = H
-        execute_on = 'TIMESTEP_BEGIN Linear'
+
+    [./moving_disk_AuxK]
+      type = FunctionAux
+      variable = H
+      function = moving_disk_fcn
     [../]
+    # [./current_sea_floor_profile]
+    #     type = FunctionAux
+    #     function = Intial_H
+    #     variable = H
+    #     execute_on = 'TIMESTEP_BEGIN Linear'
+    # [../]
 []
 
 [Functions]
+
+    [./moving_disk_fcn]
+      type = PiecewiseMultilinear
+      data_file = test_input.txt
+    [../]
     # [./Intial_h]
     #     type = ParsedFunction
     #     value = '0+A*exp(-((x-x_0)*(x-x_0)/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y)))'
@@ -64,11 +75,11 @@
 
     [./Intial_H]
         type = ParsedFunction
-        value = '1000-((A*exp(-((x-(x_0+v*t))*(x-(x_0+v*t))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t<t_0)
+        value = '1e3-((A*exp(-((x-(x_0+v*t))*(x-(x_0+v*t))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t<t_0)
                  + (A*exp(-((x-(x_0+v*t_0))*(x-(x_0+v*t_0))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t>=t_0)
                  +(k_slope*(x-x_transit)*(x>=x_transit)+0*(x<x_transit)))'
         vars = 'A x_0 y_0 sigma_x sigma_y k_slope v x_transit t_0 '
-        vals = '1.0 -500.0 0.0 80.0 80.0 2.5 100 0.0 0.1'
+        vals = '1.0 0.0 0.0 1.0 1.0 1.0 0.0 0.0 0.1'
     [../]
 
 []
@@ -222,6 +233,18 @@
     [./h_left]
         type = DirichletBC
         boundary = left
+        value = 0.0
+        variable = h
+    [../]
+    [./h_top]
+        type = DirichletBC
+        boundary = top
+        value = 0.0
+        variable = h
+    [../]
+    [./h_bot]
+        type = DirichletBC
+        boundary = bottom
         value = 0.0
         variable = h
     [../]

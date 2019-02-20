@@ -1,11 +1,11 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    xmin = -1600
-    xmax = 400
-    ymin = -750
-    ymax = 750
-    ny = 150
+    xmin = -10e3
+    xmax = 10e3
+    ymin = -10e3
+    ymax = 10e3
+    ny = 200
     nx = 200
     uniform_refine = 0
 
@@ -64,11 +64,11 @@
 
     [./Intial_H]
         type = ParsedFunction
-        value = '1000-((A*exp(-((x-(x_0+v*t))*(x-(x_0+v*t))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t<t_0)
+        value = '1e3-((A*exp(-((x-(x_0+v*t))*(x-(x_0+v*t))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t<t_0)
                  + (A*exp(-((x-(x_0+v*t_0))*(x-(x_0+v*t_0))/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y))))*(t>=t_0)
                  +(k_slope*(x-x_transit)*(x>=x_transit)+0*(x<x_transit)))'
         vars = 'A x_0 y_0 sigma_x sigma_y k_slope v x_transit t_0 '
-        vals = '1.0 -500.0 0.0 80.0 80.0 2.5 100 0.0 0.1'
+        vals = '1.0 -500.0 0.0 500.0 500.0 1.0 100 0.0 0.1'
     [../]
 
 []

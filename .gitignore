@@ -1,4 +1,5 @@
 .libs
+*.zip
 *.la
 *.avi
 *.e
