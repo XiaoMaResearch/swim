@@ -1,6 +1,5 @@
 swim
 =====
 
-"Fork swim" to create a new MOOSE-based application.
+2D Shallow Water Equaiton implemented using Moose framework
 
-For more information see: [http://mooseframework.org/create-an-app/](http://mooseframework.org/create-an-app/)
