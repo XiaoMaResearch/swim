@@ -1,13 +1,13 @@
 [Mesh]
     type = GeneratedMesh
     dim = 2
-    xmin = -5e3
-    xmax = 5e3
-    ymin = -1.0e3
-    ymax = 1.0e3
-    nx = 100
-    ny = 20
-    uniform_refine = 2
+    xmin = -400e3
+    xmax = 100e3
+    ymin = -100e3
+    ymax = 100e3
+    nx = 500
+    ny = 200
+    uniform_refine = 0
 
 []
 
@@ -38,14 +38,14 @@
         type = ParsedFunction
         value = '0+A*exp(-((x-x_0)*(x-x_0)/(2*sigma_x*sigma_x)+(y-y_0)*(y-y_0)/(2*sigma_y*sigma_y)))'
         vars = 'A x_0 y_0 sigma_x sigma_y'
-        vals = '0.1 0.0 0.0 50.0 50.0'
+        vals = '0.001 -100.0e3 0.0 10.0e3 10.0e3'
     [../]
 
     [./Intial_H]
         type = ParsedFunction
         value = '100.0-(k_slope*(x-x_transit)*(x>=x_transit)+0*(x<x_transit))'
         vars = 'x_transit k_slope'
-        vals = '1.4e3 0.01'
+        vals = '0 0.001'
     [../]
 
 []
@@ -213,16 +213,17 @@
 
 [Executioner]
   type = Transient
-  num_steps = 2000
+  num_steps = 5000
   l_max_its = 50
   dt = 1.0
   solve_type = 'PJFNK'
 
 []
 [Outputs]
-  execute_on = 'timestep_end'
+    console = true
+  execute_on = 'Initial timestep_end'
   exodus = true
 []
 [Debug]
-  show_var_residual_norms = true
+  show_var_residual_norms = false
 []
